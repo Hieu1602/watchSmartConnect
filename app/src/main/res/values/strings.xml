@@ -1,0 +1,17 @@
+<resources>
+    <string name="app_name">HealthSync</string>
+    <string name="tab_overview">Tổng quan</string>
+    <string name="tab_devices">Thiết bị</string>
+    <string name="tab_analytics">Chỉ số</string>
+    <string name="tab_sync">Đồng bộ</string>
+    <string name="scan_devices">Quét thiết bị BLE</string>
+    <string name="connecting">Đang kết nối…</string>
+    <string name="sync_now">Đồng bộ ngay</string>
+    <string name="heart_rate">Nhịp tim</string>
+    <string name="blood_oxygen">Oxy máu (SpO2)</string>
+    <string name="steps">Số bước chân</string>
+    <string name="sleep">Giấc ngủ</string>
+    <string name="calories">Calo tiêu thụ</string>
+    <string name="stress">Mức độ căng thẳng</string>
+    <string name="multi_device_sync">Đồng bộ đa thiết bị</string>
+</resources>

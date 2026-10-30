@@ -1,0 +1,6 @@
+{
+  "name": "HealthSync",
+  "description": "Đồng bộ hóa dữ liệu sức khỏe đa thiết bị đồng hồ thông minh (Bluetooth LE & ứng dụng thứ 3) liên tục và chính xác.",
+  "requestFramePermissions": [],
+  "majorCapabilities": ["MAJOR_CAPABILITY_SERVER_SIDE_GEMINI_API"]
+}
