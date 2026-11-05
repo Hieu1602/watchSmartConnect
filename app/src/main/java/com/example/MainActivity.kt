@@ -1,6 +1,7 @@
 package com.example
 
 import android.Manifest
+import android.content.Intent
 import android.os.Build
 import android.os.Bundle
 import androidx.activity.ComponentActivity
@@ -23,14 +24,18 @@ import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.layout.width
 import androidx.compose.foundation.shape.CircleShape
 import androidx.compose.material.icons.Icons
+import androidx.compose.material.icons.filled.AutoAwesome
 import androidx.compose.material.icons.filled.BarChart
 import androidx.compose.material.icons.filled.Favorite
 import androidx.compose.material.icons.filled.Sync
 import androidx.compose.material.icons.filled.Watch
+import androidx.compose.material.icons.outlined.AutoAwesome
 import androidx.compose.material.icons.outlined.BarChart
 import androidx.compose.material.icons.outlined.FavoriteBorder
 import androidx.compose.material.icons.outlined.Sync
 import androidx.compose.material.icons.outlined.Watch
+import com.example.ui.screens.AiChatScreen
+import com.example.util.configureAppCheck
 import androidx.compose.material3.CenterAlignedTopAppBar
 import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.material3.Icon
@@ -82,14 +87,17 @@ enum class AppTab(
     val testTag: String
 ) {
     OVERVIEW("Tổng quan", Icons.Filled.Favorite, Icons.Outlined.FavoriteBorder, "tab_overview"),
-    DEVICES("Thiết bị", Icons.Filled.Watch, Icons.Outlined.Watch, "tab_devices"),
+    AI_CHAT("Bác sĩ AI", Icons.Filled.AutoAwesome, Icons.Outlined.AutoAwesome, "tab_ai_chat"),
     ANALYTICS("Chỉ số", Icons.Filled.BarChart, Icons.Outlined.BarChart, "tab_analytics"),
+    DEVICES("Thiết bị", Icons.Filled.Watch, Icons.Outlined.Watch, "tab_devices"),
     SYNC("Đồng bộ", Icons.Filled.Sync, Icons.Outlined.Sync, "tab_sync")
 }
 
 class MainActivity : ComponentActivity() {
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
+        // Configure App Check before rendering Compose UI or Firebase operations
+        configureAppCheck(this, intent)
         enableEdgeToEdge()
 
         setContent {
@@ -97,6 +105,12 @@ class MainActivity : ComponentActivity() {
                 MainAppScreen()
             }
         }
+    }
+
+    override fun onNewIntent(intent: Intent) {
+        super.onNewIntent(intent)
+        setIntent(intent)
+        configureAppCheck(this, intent)
     }
 }
 
@@ -234,9 +248,13 @@ fun MainAppScreen(
                 .padding(innerPadding)
         ) { tab ->
             when (tab) {
-                AppTab.OVERVIEW -> OverviewScreen(viewModel = viewModel)
-                AppTab.DEVICES -> DevicesScreen(viewModel = viewModel)
+                AppTab.OVERVIEW -> OverviewScreen(
+                    viewModel = viewModel,
+                    onNavigateToAiChat = { currentTab = AppTab.AI_CHAT }
+                )
+                AppTab.AI_CHAT -> AiChatScreen(healthViewModel = viewModel)
                 AppTab.ANALYTICS -> AnalyticsScreen(viewModel = viewModel)
+                AppTab.DEVICES -> DevicesScreen(viewModel = viewModel)
                 AppTab.SYNC -> SyncSettingsScreen(viewModel = viewModel)
             }
         }

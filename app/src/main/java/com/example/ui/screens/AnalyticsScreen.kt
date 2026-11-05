@@ -18,6 +18,8 @@ import androidx.compose.foundation.layout.width
 import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.shape.CircleShape
 import androidx.compose.foundation.shape.RoundedCornerShape
+import androidx.compose.material.icons.Icons
+import androidx.compose.material.icons.filled.Favorite
 import androidx.compose.material3.Surface
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
@@ -90,6 +92,217 @@ fun AnalyticsScreen(
                             fontSize = 12.sp,
                             fontWeight = if (isSelected) FontWeight.Bold else FontWeight.Medium
                         )
+                    }
+                }
+            }
+        }
+
+        // AI Biosignals Analysis Section
+        item {
+            val aiReport by viewModel.aiReport.collectAsState()
+            val isAnalyzing by viewModel.isAnalyzingAi.collectAsState()
+
+            Surface(
+                modifier = Modifier
+                    .fillMaxWidth()
+                    .clip(RoundedCornerShape(20.dp))
+                    .border(
+                        1.dp,
+                        androidx.compose.ui.graphics.Brush.horizontalGradient(
+                            listOf(CyanNeon.copy(alpha = 0.6f), PurpleAccent.copy(alpha = 0.6f))
+                        ),
+                        RoundedCornerShape(20.dp)
+                    ),
+                color = Color(0xFF101926),
+                tonalElevation = 4.dp
+            ) {
+                Column(modifier = Modifier.padding(16.dp)) {
+                    Row(
+                        modifier = Modifier.fillMaxWidth(),
+                        horizontalArrangement = Arrangement.SpaceBetween,
+                        verticalAlignment = Alignment.CenterVertically
+                    ) {
+                        Row(verticalAlignment = Alignment.CenterVertically) {
+                            Box(
+                                modifier = Modifier
+                                    .size(36.dp)
+                                    .background(PurpleAccent.copy(alpha = 0.2f), CircleShape),
+                                contentAlignment = Alignment.Center
+                            ) {
+                                androidx.compose.material3.Icon(
+                                    imageVector = androidx.compose.material.icons.Icons.Default.Favorite,
+                                    contentDescription = "AI",
+                                    tint = PurpleAccent,
+                                    modifier = Modifier.size(20.dp)
+                                )
+                            }
+                            Spacer(modifier = Modifier.width(10.dp))
+                            Column {
+                                Text(
+                                    text = "AI Phân tích Thông số Hiệu sinh",
+                                    color = TextPrimary,
+                                    fontSize = 15.sp,
+                                    fontWeight = FontWeight.Bold
+                                )
+                                Text(
+                                    text = "Mô hình sinh trắc học HRV, SpO2 & Tim mạch",
+                                    color = TextMuted,
+                                    fontSize = 11.sp
+                                )
+                            }
+                        }
+
+                        androidx.compose.material3.Button(
+                            onClick = { viewModel.runAiBiosignalAnalysis() },
+                            shape = RoundedCornerShape(10.dp),
+                            colors = androidx.compose.material3.ButtonDefaults.buttonColors(
+                                containerColor = if (isAnalyzing) Color(0xFF1F2B3E) else PurpleAccent,
+                                contentColor = if (isAnalyzing) CyanNeon else Color.White
+                            ),
+                            enabled = !isAnalyzing
+                        ) {
+                            Text(
+                                text = if (isAnalyzing) "Đang phân tích…" else "Phân tích AI",
+                                fontSize = 11.sp,
+                                fontWeight = FontWeight.Bold
+                            )
+                        }
+                    }
+
+                    if (aiReport != null) {
+                        val report = aiReport!!
+                        Spacer(modifier = Modifier.height(14.dp))
+
+                        // Score & Risk badges
+                        Row(
+                            modifier = Modifier
+                                .fillMaxWidth()
+                                .background(Color(0xFF090E17), RoundedCornerShape(14.dp))
+                                .padding(12.dp),
+                            horizontalArrangement = Arrangement.SpaceBetween,
+                            verticalAlignment = Alignment.CenterVertically
+                        ) {
+                            Column {
+                                Text(
+                                    text = "Điểm hiệu sinh",
+                                    color = TextMuted,
+                                    fontSize = 11.sp
+                                )
+                                Row(verticalAlignment = Alignment.Bottom) {
+                                    Text(
+                                        text = "${report.overallHealthScore}",
+                                        color = EmeraldNeon,
+                                        fontSize = 28.sp,
+                                        fontWeight = FontWeight.Bold
+                                    )
+                                    Text(
+                                        text = "/100",
+                                        color = TextSecondary,
+                                        fontSize = 12.sp,
+                                        modifier = Modifier.padding(bottom = 4.dp, start = 2.dp)
+                                    )
+                                }
+                            }
+
+                            Column(horizontalAlignment = Alignment.End) {
+                                Text(
+                                    text = "Rủi ro tim mạch",
+                                    color = TextMuted,
+                                    fontSize = 11.sp
+                                )
+                                Text(
+                                    text = report.cardiovascularRisk.label,
+                                    color = Color(report.cardiovascularRisk.colorHex),
+                                    fontSize = 13.sp,
+                                    fontWeight = FontWeight.Bold
+                                )
+                            }
+                        }
+
+                        Spacer(modifier = Modifier.height(12.dp))
+
+                        // HRV & Autonomic balance
+                        Row(
+                            modifier = Modifier.fillMaxWidth(),
+                            horizontalArrangement = Arrangement.spacedBy(8.dp)
+                        ) {
+                            Surface(
+                                modifier = Modifier.weight(1f),
+                                shape = RoundedCornerShape(10.dp),
+                                color = Color(0xFF0D1724)
+                            ) {
+                                Column(modifier = Modifier.padding(10.dp)) {
+                                    Text(text = "HRV (RMSSD)", color = TextMuted, fontSize = 10.sp)
+                                    Text(
+                                        text = "${String.format("%.1f", report.rmssdHrvMs)} ms",
+                                        color = CyanNeon,
+                                        fontSize = 16.sp,
+                                        fontWeight = FontWeight.Bold
+                                    )
+                                }
+                            }
+
+                            Surface(
+                                modifier = Modifier.weight(1f),
+                                shape = RoundedCornerShape(10.dp),
+                                color = Color(0xFF0D1724)
+                            ) {
+                                Column(modifier = Modifier.padding(10.dp)) {
+                                    Text(text = "Độ sẵn sàng phục hồi", color = TextMuted, fontSize = 10.sp)
+                                    Text(
+                                        text = "${report.recoveryReadiness}%",
+                                        color = EmeraldNeon,
+                                        fontSize = 16.sp,
+                                        fontWeight = FontWeight.Bold
+                                    )
+                                }
+                            }
+                        }
+
+                        Spacer(modifier = Modifier.height(10.dp))
+
+                        Text(
+                            text = report.autonomicBalance,
+                            color = TextSecondary,
+                            fontSize = 11.sp
+                        )
+
+                        Spacer(modifier = Modifier.height(10.dp))
+
+                        // Diagnostic text
+                        Surface(
+                            shape = RoundedCornerShape(10.dp),
+                            color = Color(0xFF142032),
+                            modifier = Modifier.fillMaxWidth()
+                        ) {
+                            Text(
+                                text = report.aiDiagnosticSummary,
+                                color = TextPrimary,
+                                fontSize = 12.sp,
+                                modifier = Modifier.padding(12.dp)
+                            )
+                        }
+
+                        Spacer(modifier = Modifier.height(10.dp))
+
+                        // Recommendations
+                        Text(
+                            text = "Khuyến nghị phục hồi & rèn luyện:",
+                            color = CyanNeon,
+                            fontSize = 12.sp,
+                            fontWeight = FontWeight.SemiBold
+                        )
+                        Spacer(modifier = Modifier.height(4.dp))
+                        report.actionableRecommendations.forEach { rec ->
+                            Row(
+                                modifier = Modifier.padding(vertical = 2.dp),
+                                verticalAlignment = Alignment.Top
+                            ) {
+                                Text(text = "•", color = PurpleAccent, fontSize = 14.sp)
+                                Spacer(modifier = Modifier.width(6.dp))
+                                Text(text = rec, color = TextSecondary, fontSize = 11.sp)
+                            }
+                        }
                     }
                 }
             }

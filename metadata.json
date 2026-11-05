@@ -1,6 +1,6 @@
 {
   "name": "HealthSync",
-  "description": "Đồng bộ hóa dữ liệu sức khỏe đa thiết bị đồng hồ thông minh (Bluetooth LE & ứng dụng thứ 3) liên tục và chính xác.",
+  "description": "Trợ lý AI y tế chuyên sâu chăm sóc sức khỏe người cao tuổi dành cho người trẻ. Giải thích siêu gọn, đúng trọng tâm kèm đồng bộ hóa dữ liệu sinh tồn thông minh.",
   "requestFramePermissions": [],
   "majorCapabilities": ["MAJOR_CAPABILITY_SERVER_SIDE_GEMINI_API"]
 }

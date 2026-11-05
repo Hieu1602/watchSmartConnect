@@ -18,6 +18,7 @@ import com.example.engine.ThirdPartyPlatform
 import com.example.service.ContinuousSyncService
 import kotlinx.coroutines.flow.SharingStarted
 import kotlinx.coroutines.flow.StateFlow
+import kotlinx.coroutines.flow.asStateFlow
 import kotlinx.coroutines.flow.stateIn
 import kotlinx.coroutines.launch
 import java.util.UUID
@@ -54,6 +55,30 @@ class HealthSyncViewModel(application: Application) : AndroidViewModel(applicati
     val scanError: StateFlow<String?> = bleScanner.scanError
 
     val thirdPartyPlatforms: StateFlow<List<ThirdPartyPlatform>> = thirdPartyBridge.platforms
+
+    private val aiAnalyzer = com.example.engine.VitalSignsAiAnalyzer()
+    private val _aiReport = kotlinx.coroutines.flow.MutableStateFlow<com.example.engine.BiosignalAiReport?>(null)
+    val aiReport: StateFlow<com.example.engine.BiosignalAiReport?> = _aiReport.asStateFlow()
+
+    private val _isAnalyzingAi = kotlinx.coroutines.flow.MutableStateFlow(false)
+    val isAnalyzingAi: StateFlow<Boolean> = _isAnalyzingAi.asStateFlow()
+
+    fun runAiBiosignalAnalysis() {
+        viewModelScope.launch {
+            _isAnalyzingAi.value = true
+            kotlinx.coroutines.delay(1200) // simulate deep neural analysis
+            val report = aiAnalyzer.analyzeBiosignals(
+                summary = healthSummary.value,
+                recentHistory = recentMetrics.value
+            )
+            _aiReport.value = report
+            _isAnalyzingAi.value = false
+        }
+    }
+
+    fun dismissAiReport() {
+        _aiReport.value = null
+    }
 
     fun triggerManualSync() {
         syncEngine.triggerManualSyncNow()

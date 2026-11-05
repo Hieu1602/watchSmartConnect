@@ -1,9 +1,12 @@
 <resources>
     <string name="app_name">HealthSync</string>
     <string name="tab_overview">Tổng quan</string>
+    <string name="tab_ai_chat">Bác sĩ AI</string>
     <string name="tab_devices">Thiết bị</string>
     <string name="tab_analytics">Chỉ số</string>
     <string name="tab_sync">Đồng bộ</string>
+    <string name="ai_geriatric_title">Bác sĩ AI Lão khoa</string>
+    <string name="ai_geriatric_subtitle">Tư vấn y tế người cao tuổi cho người thân trẻ</string>
     <string name="scan_devices">Quét thiết bị BLE</string>
     <string name="connecting">Đang kết nối…</string>
     <string name="sync_now">Đồng bộ ngay</string>

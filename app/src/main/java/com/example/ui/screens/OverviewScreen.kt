@@ -59,11 +59,16 @@ import com.example.ui.theme.PurpleAccent
 import com.example.ui.theme.TextMuted
 import com.example.ui.theme.TextPrimary
 import com.example.ui.theme.TextSecondary
+import androidx.compose.foundation.BorderStroke
+import androidx.compose.foundation.clickable
+import androidx.compose.ui.graphics.Brush
+import com.example.ui.theme.HealthDarkBackground
 import com.example.ui.viewmodel.HealthSyncViewModel
 
 @Composable
 fun OverviewScreen(
     viewModel: HealthSyncViewModel,
+    onNavigateToAiChat: () -> Unit = {},
     modifier: Modifier = Modifier
 ) {
     val summary by viewModel.healthSummary.collectAsState()
@@ -81,6 +86,99 @@ fun OverviewScreen(
         contentPadding = PaddingValues(start = 16.dp, end = 16.dp, top = 8.dp, bottom = 24.dp),
         verticalArrangement = Arrangement.spacedBy(16.dp)
     ) {
+        // Geriatric AI Medical Chatbot Card for Young Caregivers
+        item {
+            Surface(
+                shape = RoundedCornerShape(18.dp),
+                color = Color(0xFF101C2B),
+                border = BorderStroke(1.dp, CyanNeon.copy(alpha = 0.5f)),
+                modifier = Modifier
+                    .fillMaxWidth()
+                    .testTag("ai_geriatric_banner_card")
+                    .clickable { onNavigateToAiChat() }
+            ) {
+                Column(modifier = Modifier.padding(16.dp)) {
+                    Row(
+                        modifier = Modifier.fillMaxWidth(),
+                        verticalAlignment = Alignment.CenterVertically,
+                        horizontalArrangement = Arrangement.SpaceBetween
+                    ) {
+                        Row(verticalAlignment = Alignment.CenterVertically) {
+                            Box(
+                                modifier = Modifier
+                                    .size(36.dp)
+                                    .clip(CircleShape)
+                                    .background(
+                                        Brush.linearGradient(
+                                            listOf(CyanNeon, PurpleAccent)
+                                        )
+                                    ),
+                                contentAlignment = Alignment.Center
+                            ) {
+                                Icon(
+                                    imageVector = Icons.Default.Bolt,
+                                    contentDescription = null,
+                                    tint = HealthDarkBackground,
+                                    modifier = Modifier.size(22.dp)
+                                )
+                            }
+                            Spacer(modifier = Modifier.width(10.dp))
+                            Column {
+                                Row(verticalAlignment = Alignment.CenterVertically) {
+                                    Text(
+                                        text = "Bác Sĩ AI Lão Khoa",
+                                        color = TextPrimary,
+                                        fontSize = 15.sp,
+                                        fontWeight = FontWeight.Bold
+                                    )
+                                    Spacer(modifier = Modifier.width(6.dp))
+                                    Surface(
+                                        shape = CircleShape,
+                                        color = EmeraldNeon.copy(alpha = 0.2f)
+                                    ) {
+                                        Text(
+                                            text = "Gemini 3.8",
+                                            color = EmeraldNeon,
+                                            fontSize = 9.sp,
+                                            fontWeight = FontWeight.Bold,
+                                            modifier = Modifier.padding(horizontal = 6.dp, vertical = 2.dp)
+                                        )
+                                    }
+                                }
+                                Text(
+                                    text = "Dành riêng cho người trẻ chăm sóc ông bà/bố mẹ",
+                                    color = TextSecondary,
+                                    fontSize = 11.sp
+                                )
+                            }
+                        }
+
+                        Surface(
+                            shape = RoundedCornerShape(10.dp),
+                            color = CyanNeon.copy(alpha = 0.15f),
+                            border = BorderStroke(1.dp, CyanNeon)
+                        ) {
+                            Text(
+                                text = "Hỏi AI →",
+                                color = CyanNeon,
+                                fontSize = 12.sp,
+                                fontWeight = FontWeight.Bold,
+                                modifier = Modifier.padding(horizontal = 10.dp, vertical = 6.dp)
+                            )
+                        }
+                    }
+
+                    Spacer(modifier = Modifier.height(10.dp))
+                    Text(
+                        text = "Giải thích siêu gọn, đúng trọng tâm về: Huyết áp, nhịp tim bất thường, nguy cơ đột quỵ, mất ngủ, nhầm thuốc, phòng chống trượt ngã.",
+                        color = TextPrimary.copy(alpha = 0.9f),
+                        fontSize = 12.sp,
+                        lineHeight = 17.sp
+                    )
+                }
+            }
+        }
+
         // Continuous Sync Banner
         item {
             ContinuousSyncStatusBanner(
